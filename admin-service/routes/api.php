@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,3 +15,14 @@ Route::get('/stats', function () {
         'users' => 120
     ]);
 });
+
+
+Route::get('/list', function () {
+    $items = Admin::all();
+    return response()->json([
+        'message' => 'Admin list',
+        'data' => $items
+    ]);
+});
+
+

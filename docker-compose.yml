@@ -11,6 +11,8 @@ services:
     depends_on:
       - vendor-service
       - admin-service
+    volumes:
+      - ./api-gateway:/var/www
 
   vendor-service:
     build:
@@ -19,6 +21,8 @@ services:
       - "8001:8000"
     networks:
       - app-network
+    volumes:
+      - ./vendor-service:/var/www 
 
   admin-service:
     build:
@@ -27,6 +31,8 @@ services:
       - "8002:8000"
     networks:
       - app-network
+    volumes:
+      - ./admin-service:/var/www
 
   mysql-vendor:
     image: mysql:8
