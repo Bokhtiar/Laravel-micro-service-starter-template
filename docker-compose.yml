@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    depends_on:
+      - vendor-service
+      - admin-service
+
+  vendor-service:
+    build:
+      context: ./vendor-service
+    ports:
+      - "8001:8000"
+    networks:
+      - app-network
+
+  admin-service:
+    build:
+      context: ./admin-service
+    ports:
+      - "8002:8000"
+    networks:
+      - app-network
+
+  mysql-vendor:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootvendor
+      MYSQL_DATABASE: vendor_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - vendor-mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  mysql-admin:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootadmin
+      MYSQL_DATABASE: admin_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - admin-mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  mysql-gateway:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootgateway
+      MYSQL_DATABASE: gateway_db
+    ports:
+      - "3309:3306"
+    volumes:
+      - gateway-mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+      - "8090:80"
+    networks:
+      - app-network
+
+volumes:
+  vendor-mysql-data:
+  admin-mysql-data:
+  gateway-mysql-data:
+
+networks:
+  app-network:
+    driver: bridge
